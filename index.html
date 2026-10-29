@@ -396,18 +396,7 @@ function cardHTML(){
     <div class="sd-in"><h2>Save the date</h2><div class="nm">${esc(g.short)}<svg class="rg" viewBox="0 0 120 70" aria-label="và" role="img"><use href="#rings"/></svg>${esc(b.short)}</div><div class="dt">${dotDate}</div></div>
   </section>`}
 
-  ${noRsvp ? '' : `
-  <section class="alb reveal">
-    <div class="alb-row f1">
-      <div class="alb-title"><div class="the">The</div><div class="al">Album</div></div>
-      <button class="tf r1" type="button" data-lb="0" aria-label="Xem ảnh 1"><img src="${album[0]}" alt="" loading="lazy"></button>
-    </div>
-    <div class="alb-row" style="margin-top:14px;min-height:230px">
-      <button class="tf l1" type="button" data-lb="1" aria-label="Xem ảnh 2"><img src="${album[1]}" alt="" loading="lazy"></button>
-      <div class="alb-title" style="padding-left:28px"><div class="of">Of<br>Love</div></div>
-    </div>
-    <div class="alb-grid">${album.slice(2).map((u,i) => `<button class="tf${wide.has(i+2)?' wide':''}" type="button" data-lb="${i+2}" aria-label="Xem ảnh ${i+3}"><img src="${u}" alt="" loading="lazy"></button>`).join('')}</div>
-  </section>`}
+  ${noRsvp ? '' : `<div class="film" aria-hidden="true"><div class="film-track">${album.concat(album).map(u => `<img src="${u}" alt="" loading="lazy">`).join('')}</div></div>`}
 
   ${noRsvp ? '' : `  <section class="sec rsvp-sec reveal">
     <h2 class="h2s">Xác nhận tham dự</h2>
