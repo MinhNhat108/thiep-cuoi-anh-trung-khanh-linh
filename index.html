@@ -267,6 +267,7 @@ img{display:block;max-width:100%}
  "photos":{"timeline":"photos/p2622.jpg","saveDate":"photos/doi.jpg","thanks":"photos/p5033.jpg","groom":"photos/groom.jpg","bride":"photos/p3902.jpg"},
  "album":["photos/bia.jpg","photos/doi.jpg","photos/p2622.jpg","photos/p3054.jpg","photos/p4342.jpg","photos/p4383.jpg","photos/p3902.jpg","photos/p5033.jpg"],
  "music":"","musicName":"I do",
+ "rsvpUrl":"https://script.google.com/macros/s/AKfycbxiHLiGBiRV4Ox-RPZgH8RwD7LDEfahamuT84yBQ73AtTj4GyENcqZKulJblN4gTAtugA/exec",
  "phones":{"groom":"0849 800 069","bride":""},
  "banks":[{"who":"Mừng cưới chú rể","bank":"Techcombank","name":"HO ANH TRUNG","number":"19035033172019","qr":""},{"who":"Mừng cưới cô dâu","bank":"VietinBank","name":"NGUYEN KHANH LINH","number":"100801196169","qr":""}]
 }</script>
@@ -417,10 +418,12 @@ function cardHTML(){
     </form>
     <div class="thanks" id="thanks" hidden>
       <div class="h2s" style="font-size:42px">Cảm ơn bạn!</div>
-      <div>Bạn sao chép lời nhắn dưới đây và gửi qua Zalo cho chúng mình nhé:</div>
-      <pre id="thanksMsg"></pre>
-      <div class="actions"><button class="btn" type="button" data-act="copymsg">Sao chép lời nhắn</button></div>
-      <p style="margin:12px 0 0;font-size:16px">${[['Zalo chú rể', S.phones.groom], ['Zalo cô dâu', S.phones.bride]].filter(x => x[1]).map(x => `${x[0]}: <b>${esc(x[1])}</b>`).join(' · ')}</p>
+      <div id="thanksTxt"></div>
+      <div id="thanksFallback" hidden>
+        <pre id="thanksMsg"></pre>
+        <div class="actions"><button class="btn" type="button" data-act="copymsg">Sao chép lời nhắn</button></div>
+        <p style="margin:12px 0 0;font-size:16px">${[['Zalo chú rể', S.phones.groom], ['Zalo cô dâu', S.phones.bride]].filter(x => x[1]).map(x => `${x[0]}: <b>${esc(x[1])}</b>`).join(' · ')}</p>
+      </div>
     </div>
     <div class="gift" id="gift" hidden>
       ${banks.map(k => `<div class="bank"><div><div class="cap">${esc(k.who)}</div><div>${esc(k.bank)} · ${esc(k.name)}</div><div class="num">${esc(k.number)}</div><button class="btn ghost sm" type="button" data-copy="${esc(k.number)}">Sao chép số tài khoản</button></div>${k.qr ? `<img class="qr" src="${esc(k.qr)}" alt="Mã QR chuyển khoản" loading="lazy">` : ''}</div>`).join('')}
@@ -489,15 +492,27 @@ async function copyText(text, btn){
   try { await navigator.clipboard.writeText(text); btn.textContent = 'Đã sao chép'; } catch { btn.textContent = 'Hãy bôi đen để sao chép'; }
   setTimeout(() => btn.textContent = old, 1800);
 }
-app.addEventListener('submit', e => {
+app.addEventListener('submit', async e => {
   if (e.target.id !== 'rsvpForm') return;
   e.preventDefault();
   const f = new FormData(e.target), name = String(f.get('name')||'').trim();
   $('#r-err').hidden = !!name; if (!name){ $('#r-name').focus(); return; }
   const wish = String(f.get('wish')||'').trim();
   const msg = `Xác nhận dự cưới ${g.short} & ${b.short} (${pad(p.da)}/${pad(p.mo)}/${p.y})\n• Tên: ${name}\n• Tham dự: ${f.get('go')} (${f.get('count')})\n• ${f.get('side')}` + (wish ? `\n• Lời chúc: ${wish}` : '');
-  $('#thanksMsg').textContent = msg; $('#thanks').hidden = false;
+  const btn = e.target.querySelector('button[type=submit]'), label = btn.textContent;
+  $('#thanksMsg').textContent = msg; $('#thanksFallback').hidden = true; $('#thanksTxt').textContent = 'Đang gửi xác nhận...'; $('#thanks').hidden = false;
   $('#thanks').scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block:'center'});
+  btn.disabled = true; btn.textContent = 'Đang gửi...';
+  let sent = false;
+  if (S.rsvpUrl){
+    try {
+      const r = await fetch(S.rsvpUrl, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({action:'rsvp', name, go:String(f.get('go')), count:String(f.get('count')), side:String(f.get('side')), wish})});
+      sent = !!(await r.json()).ok;
+    } catch(err){ sent = false; }
+  }
+  btn.disabled = false; btn.textContent = label;
+  if (sent) $('#thanksTxt').textContent = 'Chúng mình đã nhận được xác nhận của bạn. Hẹn gặp bạn trong ngày vui!';
+  else { $('#thanksTxt').textContent = 'Chưa gửi tự động được. Bạn sao chép lời nhắn dưới đây và gửi qua Zalo cho chúng mình nhé:'; $('#thanksFallback').hidden = false; }
 });
 document.addEventListener('click', e => {
   const t = e.target.closest('[data-act],[data-copy],[data-lb]'); if (!t) return;
