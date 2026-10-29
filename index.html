@@ -61,7 +61,9 @@ img{display:block;max-width:100%}
 .inv>*:not(.flora):not(.wash){position:relative;z-index:1}
 .fam{display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:center;font-family:var(--ui);color:var(--gold);font-size:15px;line-height:1.35;padding-bottom:6px}
 .fam b{display:block;font-size:19px;font-weight:700;margin-bottom:3px}
-.fam{font-weight:500;color:var(--gold-dk);font-size:16px}
+.fam{font-weight:500;color:var(--gold-dk);font-size:clamp(12.5px,3.7vw,16px);gap:6px}
+.fam>div{white-space:nowrap}
+.cover-bar span{white-space:nowrap;font-size:clamp(12.5px,3.7vw,14px)}
 .fam .pl{display:block;font-size:13.5px;font-weight:500;opacity:1;margin-top:3px}
 .cover-names,.cover-names .n,.cover-date,.tap,.cover-bar,.cover-bar>div,.cover-bar b,.cover-bar span{color:#5A3743}
 .cover-names .rg{color:#5A3743}
@@ -77,8 +79,8 @@ img{display:block;max-width:100%}
 .guest-script{font-family:"Pinyon Script","WindSong",cursive;font-size:42px;color:var(--rose);margin:8px 0 2px;line-height:1.4;word-break:break-word;font-weight:500}
 .lede{margin:0 auto;max-width:30ch;font-size:16.5px;font-weight:400;color:var(--gold)}
 .names-big{margin:34px auto 6px;max-width:330px;line-height:1.05;text-align:center}
-.names-big .n{display:block;font-family:"Pinyon Script",var(--script);font-size:58px;font-weight:400;color:var(--gold);letter-spacing:.01em}
-.names-big .n.r{padding-left:70px}
+.names-big .n{display:block;font-family:"Pinyon Script",var(--script);font-size:clamp(42px,13.5vw,58px);font-weight:400;color:var(--gold);letter-spacing:.01em;white-space:nowrap}
+.names-big .n.r{padding-left:clamp(24px,12vw,70px)}
 .rg{display:inline-block;fill:none;stroke:currentColor;stroke-width:2.2}
 .names-big .and{display:block;margin:6px 0 8px;transform:translateX(-22px)}
 .names-big .and .rg{width:104px;height:61px}
@@ -257,7 +259,7 @@ img{display:block;max-width:100%}
  "groomFamily":{"father":"Ông Hồ Quế Tùng","mother":"Bà Nguyễn Thị Tuyết","place":""},
  "brideFamily":{"father":"Ông Nguyễn Văn Huyên","mother":"Bà Nguyễn Ngọc Hiển","place":""},
  "date":"2026-11-18","time":"11:00",
- "event":{"title":"Tiệc Cưới Nhà Trai","place":"Trung tâm tổ chức sự kiện Hoa Ban","address":"Tổ dân phố Hữu Nghị, Phường Điện Biên Phủ, tỉnh Điện Biên","map":"https://www.google.com/maps/search/?api=1&query=Trung+t%C3%A2m+t%E1%BB%95+ch%E1%BB%A9c+s%E1%BB%B1+ki%E1%BB%87n+Hoa+Ban+Ph%C6%B0%E1%BB%9Dng+%C4%90i%E1%BB%87n+Bi%C3%AAn+Ph%E1%BB%A7+t%E1%BB%89nh+%C4%90i%E1%BB%87n+Bi%C3%AAn"},
+ "event":{"title":"Tiệc Cưới","place":"Trung tâm tổ chức sự kiện Hoa Ban","address":"Tổ dân phố Hữu Nghị, Phường Điện Biên Phủ, tỉnh Điện Biên","map":"https://www.google.com/maps/search/?api=1&query=Trung+t%C3%A2m+t%E1%BB%95+ch%E1%BB%A9c+s%E1%BB%B1+ki%E1%BB%87n+Hoa+Ban+Ph%C6%B0%E1%BB%9Dng+%C4%90i%E1%BB%87n+Bi%C3%AAn+Ph%E1%BB%A7+t%E1%BB%89nh+%C4%90i%E1%BB%87n+Bi%C3%AAn"},
  "intro":"Có những cuộc gặp gỡ tưởng chừng là tình cờ, nhưng lại trở thành điều tuyệt vời nhất trong cuộc đời. Sau hành trình yêu thương và đồng hành, chúng mình quyết định cùng nhau viết tiếp câu chuyện của mình bằng một đám cưới thật hạnh phúc.",
  "invite":"Trân trọng kính mời bạn đến tham dự buổi tiệc chung vui cùng gia đình chúng mình!",
  "story":"Cảm ơn cuộc đời đã cho chúng mình gặp nhau, yêu nhau và chọn nhau.\n\nTừ hôm nay, mình cùng nhau viết tiếp câu chuyện hạnh phúc mang tên Mãi mãi",
@@ -394,7 +396,7 @@ function cardHTML(){
     <div class="sd-in"><h2>Save the date</h2><div class="nm">${esc(g.short)}<svg class="rg" viewBox="0 0 120 70" aria-label="và" role="img"><use href="#rings"/></svg>${esc(b.short)}</div><div class="dt">${dotDate}</div></div>
   </section>`}
 
-  ${noRsvp ? '' : `<div class="film" aria-hidden="true"><div class="film-track">${album.concat(album).map(u => `<img src="${u}" alt="" loading="lazy">`).join('')}</div></div>
+  ${noRsvp ? '' : `
   <section class="alb reveal">
     <div class="alb-row f1">
       <div class="alb-title"><div class="the">The</div><div class="al">Album</div></div>
